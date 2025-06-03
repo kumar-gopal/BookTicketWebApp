@@ -1,0 +1,55 @@
+name: Build and Deploy BookMySTicket
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 22
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build TypeScript
+      run: npm run build
+
+    - name: Prepare Deployment Folder
+      run: |
+        mkdir deploy
+        cp -r dist deploy/
+        cp ecosystem.config.js package.json package-lock.json deploy/
+        # Optional: Copy .env or public folders if required
+        # cp .env deploy/
+
+    - name: Install Production Dependencies
+      run: |
+        cd deploy
+        npm install --production
+
+    - name: Setup SSH Access
+      uses: webfactory/ssh-agent@v0.8.1
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    - name: Sync Files to EC2
+      run: |
+        rsync -avz --delete deploy/ ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ubuntu/app/
+
+    - name: Reload PM2 on EC2
+      run: |
+        ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          cd /home/ubuntu/BookTicketWebApp
+          pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js
+          pm2 save
+        EOF
