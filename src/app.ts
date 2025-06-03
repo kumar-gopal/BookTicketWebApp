@@ -8,7 +8,8 @@ app.use(express.json());
 app.get("/home", (req, res) => {
   res.status(200).json({
     message: "Welcome to Book My Ticket API",
-    status: "success"
+    status: "success",
+    Founder : "Gopal kumar"
   });
 });
 
