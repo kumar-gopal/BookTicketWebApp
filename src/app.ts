@@ -21,6 +21,14 @@ app.get("/health", (req, res) => {
 }
 );
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "This is a simple API for managing items.and testing the server",
+    status: "success",
+    version: "1.0.0", 
+  });
+});
+
 // Routes
 // app.use('/api/items', itemRoutes);
 
