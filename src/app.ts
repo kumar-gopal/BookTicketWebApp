@@ -13,6 +13,14 @@ app.get("/home", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "If you are seeing this, it means the server is running successfully.",
+    status: "success"
+  });
+}
+);
+
 // Routes
 // app.use('/api/items', itemRoutes);
 
