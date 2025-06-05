@@ -24,6 +24,7 @@ app.get("/health", (req, res) => {
 app.get("/", (req, res) => {
   res.status(200).json({
     message: "This is a simple API for managing items.and testing the server",
+    founder : "Gopal kumar",
     status: "success",
     version: "1.0.0", 
   });
