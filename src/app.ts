@@ -32,6 +32,12 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    message : "Everything is fine Good to go",
+  });
+});
+
 // Routes
 // app.use('/api/items', itemRoutes);
 
